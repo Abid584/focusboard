@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TASK_PRIORITIES, TASK_STATUSES } from "@/lib/constants";
 
 export const registerSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(50),
@@ -18,3 +19,56 @@ export const loginSchema = z.object({
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const projectSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .max(60, "Name must be at most 60 characters"),
+  description: z
+    .string()
+    .trim()
+    .max(200, "Description must be at most 200 characters")
+    .optional(),
+});
+
+export function toFieldErrors(
+  issues: { path: PropertyKey[]; message: string }[],
+) {
+  const fieldErrors: Record<string, string[]> = {};
+  for (const issue of issues) {
+    const key = String(issue.path[0]);
+    (fieldErrors[key] ??= []).push(issue.message);
+  }
+  return fieldErrors;
+}
+
+export const taskSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, "Title is required")
+    .max(120, "Title must be at most 120 characters"),
+  description: z
+    .string()
+    .trim()
+    .max(500, "Description must be at most 500 characters")
+    .optional(),
+  status: z.enum(TASK_STATUSES),
+  priority: z.enum(TASK_PRIORITIES),
+  dueDate: z
+    .string()
+    .optional()
+    .refine((v) => !v || !Number.isNaN(Date.parse(v)), "Enter a valid date"),
+});
+
+export const taskFiltersSchema = z.object({
+  q: z.string().trim().max(100).catch(""),
+  status: z.enum(TASK_STATUSES).or(z.literal("")).catch(""),
+  priority: z.enum(TASK_PRIORITIES).or(z.literal("")).catch(""),
+  projectId: z.string().trim().max(50).catch(""),
+  page: z.coerce.number().int().min(1).max(100000).catch(1),
+});
+
+export type TaskFilters = z.infer<typeof taskFiltersSchema>;

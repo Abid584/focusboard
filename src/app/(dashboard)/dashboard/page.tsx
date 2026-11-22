@@ -1,26 +1,34 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { auth } from "@/lib/auth";
-import { logout } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { StatsCards, StatsSkeleton } from "@/components/dashboard/stats-cards";
 
 async function Welcome() {
   const session = await auth();
   return (
-    <h1 className="text-2xl font-semibold">Welcome, {session?.user.name}</h1>
+    <h1 className="text-2xl font-semibold tracking-tight">
+      Welcome, {session?.user.name}
+    </h1>
   );
 }
 
 export default function DashboardPage() {
   return (
-    <main className="space-y-6 p-8">
-      <Suspense fallback={<p>Loading...</p>}>
-        <Welcome />
-      </Suspense>
-      <form action={logout}>
-        <Button type="submit" variant="outline">
-          Log out
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <Suspense fallback={<Skeleton className="h-8 w-64" />}>
+          <Welcome />
+        </Suspense>
+        <Button asChild variant="outline">
+          <Link href="/tasks">View all tasks</Link>
         </Button>
-      </form>
-    </main>
+      </div>
+
+      <Suspense fallback={<StatsSkeleton />}>
+        <StatsCards />
+      </Suspense>
+    </div>
   );
 }

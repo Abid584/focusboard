@@ -4,7 +4,7 @@ import { authConfig } from "@/lib/auth.config";
 
 const { auth } = NextAuth(authConfig);
 
-const protectedPrefixes = ["/dashboard", "/projects", "/settings"];
+const protectedPrefixes = ["/dashboard", "/projects", "/tasks", "/settings"];
 const authPages = ["/login", "/register"];
 
 export const proxy = auth((req) => {
