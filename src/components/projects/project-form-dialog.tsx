@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 type ProjectData = { id: string; name: string; description: string | null };
 
@@ -33,7 +34,10 @@ function ProjectForm({
       const result = project
         ? await updateProject(prev, formData)
         : await createProject(prev, formData);
-      if (result?.success) onSuccess();
+      if (result?.success) {
+        toast.success(project ? "Project updated" : "Project created");
+        onSuccess();
+      }
       return result;
     },
     undefined,

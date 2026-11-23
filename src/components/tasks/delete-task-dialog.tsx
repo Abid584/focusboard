@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { Trash2 } from "lucide-react";
-import { deleteTask } from "@/actions/task.actions";
+import { deleteTask, TaskFormState } from "@/actions/task.actions";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export function DeleteTaskDialog({
   taskId,
@@ -22,7 +23,14 @@ export function DeleteTaskDialog({
   taskId: string;
   taskTitle: string;
 }) {
-  const [state, formAction, pending] = useActionState(deleteTask, undefined);
+  const [state, formAction, pending] = useActionState(
+    async (prev: TaskFormState, formData: FormData) => {
+      const result = await deleteTask(prev, formData);
+      if (result?.success) toast.success("Task deleted");
+      return result;
+    },
+    undefined,
+  );
 
   return (
     <AlertDialog>

@@ -8,7 +8,6 @@ import { ProjectFormDialog } from "@/components/projects/project-form-dialog";
 import { DeleteProjectDialog } from "@/components/projects/delete-project-dialog";
 import { TaskBoard } from "@/components/tasks/task-board";
 import { TaskFormDialog } from "@/components/tasks/task-form-dialog";
-
 export default async function ProjectPage({
   params,
 }: {

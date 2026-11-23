@@ -9,6 +9,9 @@ import { TaskListItem } from "@/components/tasks/task-list-item";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Pagination, buildHref } from "@/components/tasks/pagination";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Tasks" };
 
 export default async function TasksPage({
   searchParams,

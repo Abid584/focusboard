@@ -1,15 +1,20 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Suspense } from "react";
-import { auth } from "@/lib/auth";
+import { getCurrentUser } from "@/data/users";
+import { requireUserId } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatsCards, StatsSkeleton } from "@/components/dashboard/stats-cards";
 
+export const metadata: Metadata = { title: "Dashboard" };
+
 async function Welcome() {
-  const session = await auth();
+  const userId = await requireUserId();
+  const user = await getCurrentUser(userId);
   return (
     <h1 className="text-2xl font-semibold tracking-tight">
-      Welcome, {session?.user.name}
+      Welcome, {user?.name}
     </h1>
   );
 }

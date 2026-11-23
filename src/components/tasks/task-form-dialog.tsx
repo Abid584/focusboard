@@ -26,6 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 const selectClass =
   "h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30";
@@ -50,7 +51,10 @@ function TaskForm({
       const result = task
         ? await updateTask(prev, formData)
         : await createTask(prev, formData);
-      if (result?.success) onSuccess();
+      if (result?.success) {
+        toast.success(task ? "Task updated" : "Task created");
+        onSuccess();
+      }
       return result;
     },
     undefined,

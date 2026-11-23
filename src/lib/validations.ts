@@ -1,17 +1,42 @@
 import { z } from "zod";
 import { TASK_PRIORITIES, TASK_STATUSES } from "@/lib/constants";
 
+const nameRule = z
+  .string()
+  .trim()
+  .min(2, "Name must be at least 2 characters")
+  .max(50);
+
+const passwordRules = z
+  .string()
+  .min(8, "At least 8 characters")
+  .max(72, "At most 72 characters")
+  .regex(/[a-z]/, "At least one lowercase letter")
+  .regex(/[A-Z]/, "At least one uppercase letter")
+  .regex(/[^A-Za-z0-9]/, "At least one special character (e.g. ! @ # $)");
+
 export const registerSchema = z.object({
-  name: z.string().trim().min(2, "Name must be at least 2 characters").max(50),
+  name: nameRule,
   email: z.string().trim().toLowerCase().email("Enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "At least 8 characters")
-    .max(72, "At most 72 characters")
-    .regex(/[a-z]/, "At least one lowercase letter")
-    .regex(/[A-Z]/, "At least one uppercase letter")
-    .regex(/[^A-Za-z0-9]/, "At least one special character (e.g. ! @ # $)"),
+  password: passwordRules,
 });
+
+export const profileSchema = z.object({ name: nameRule });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Enter your current password"),
+    newPassword: passwordRules,
+    confirmPassword: z.string().min(1, "Confirm your new password"),
+  })
+  .refine((d) => d.newPassword === d.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  })
+  .refine((d) => d.newPassword !== d.currentPassword, {
+    message: "New password must be different from the current one",
+    path: ["newPassword"],
+  });
 
 export const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email(),

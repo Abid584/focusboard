@@ -3,6 +3,9 @@ import { requireUserId } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectFormDialog } from "@/components/projects/project-form-dialog";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Projects" };
 
 export default async function ProjectsPage() {
   const userId = await requireUserId();
